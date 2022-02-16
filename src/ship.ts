@@ -1,8 +1,7 @@
 import { KeyboardControls } from "./keyboardControls";
 import { Vector2 } from "./math";
 
-// Ship stats
-const MAX_ACCELERATION = 1;
+const GRAVITY = 9.81 / 500_000;
 
 export function createShip() {
   const position: Vector2 = { x: 0, y: 0 };
@@ -17,15 +16,17 @@ export function createShip() {
     update(deltaTime: number, keyboard: KeyboardControls) {
       // react to controls
 
+      acceleration.x = 0;
+      acceleration.y = 0;
+
       if (keyboard.isPressed("ArrowUp")) acceleration.y = -thrust;
       else if (keyboard.isPressed("ArrowDown")) acceleration.y = thrust;
-      else acceleration.y = 0;
 
       if (keyboard.isPressed("ArrowRight")) acceleration.x = thrust;
       else if (keyboard.isPressed("ArrowLeft")) acceleration.x = -thrust;
-      else acceleration.x = 0;
 
       // update physics
+      acceleration.y = GRAVITY + acceleration.y;
 
       velocity.x += deltaTime * acceleration.x;
       velocity.y += deltaTime * acceleration.y;
