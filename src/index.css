@@ -25,5 +25,11 @@ body {
 }
 
 #spaceship {
-  font-size: 1.25rem;
+  font-size: 1.1rem;
+  will-change: transform;
+}
+
+#canvas {
+  border: 1px solid hsl(0 0% 15%);
+  max-height: 100%;
 }

@@ -21,10 +21,8 @@ function update() {
   requestAnimationFrame(() => update());
 }
 
-document.getElementById("app")!.innerHTML = `
-  ${hud.html()}
-  ${ship.html()}
-`;
+document.getElementById("hud")!.innerHTML = hud.html();
+document.getElementById("canvas")!.innerHTML = ship.html();
 
 update();
 hud.scheduleUpdates();
