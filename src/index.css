@@ -1,0 +1,29 @@
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background-color: rgb(20, 21, 21);
+  font-family: monospace;
+  color: white;
+  font-size: 20px;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#hud {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 0.5em;
+  font-size: 0.825rem;
+}
+
+#spaceship {
+  font-size: 1.25rem;
+}

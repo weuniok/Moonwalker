@@ -1,0 +1,17 @@
+{
+  "name": "moonwalker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "license": "ISC",
+  "scripts": {
+    "dev": "parcel src/index.html --open",
+    "build": "parcel build src/index.html"
+  },
+  "dependencies": {
+    "parcel": "^2.3.1"
+  },
+  "devDependencies": {
+    "typescript": "^4.5.5"
+  }
+}
