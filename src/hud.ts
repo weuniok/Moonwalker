@@ -12,8 +12,6 @@ export function createHud() {
 
         if (fpsCounter) {
           fpsCounter.innerText = `${Math.round(fps)} FPS`;
-
-        
         }
       };
 
@@ -25,7 +23,7 @@ export function createHud() {
         },
       };
     },
-    html() {
+    render() {
       return `\
         <output id="fps-counter">${fps} FPS</output>
       `;

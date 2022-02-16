@@ -14,50 +14,55 @@ const worldBounds = {
 };
 
 export function createShip() {
-  const position: Vector2 = { x: 500, y: 500 };
-  const velocity: Vector2 = { x: 0, y: 0 };
-  const acceleration: Vector2 = { x: 0, y: 0 };
+  const position = new Vector2(500, 500);
+  const velocity = Vector2.zero();
+  const acceleration = Vector2.zero();
   const thrust: number = 0.0001;
-  const rotationThrust: number = 0.0001;
+  const rotationThrust: number = 3.14 * 2 * meterConversion;
   const safeVelocity: number = 0.001; //safe velocity for no kaboom on collision
-  // const rotationAngle:; number = 0; //angle measured clockwise from upwards direction in radians;
-  // const rotationTrig: Vector2 = {horizontal: Math.sin(rotationAngle), vertical: Math.cos(rotationAngle)};
-  // const rotationAcceleration: number = placeholder;
-  // const rotationVelocity: number = placeholder;
+  //rotation variables
+  let rotationAngle = 0; //angle measured clockwise from upwards direction in radians;
+  const rotationMath = () => ({
+    horizontal: Math.sin(rotationAngle),
+    vertical: Math.cos(rotationAngle),
+  });
+  let rotationAcceleration = 0;
+  let rotationVelocity = 0;
+
   return {
-    html() {
+    render() {
       return `
         <g id="spaceship">
-          <text>🚀</text>
+          <text transform="rotate(-45)">🚀</text>
         </g>
       `;
     },
     update(deltaTime: number, keyboard: KeyboardControls) {
+      console.log("rotationAngle.value", rotationAngle);
+
       // react to controls
       //TODO add rotation
       acceleration.x = 0;
       acceleration.y = 0;
+      rotationAcceleration = 0;
 
-      if (keyboard.isPressed("ArrowUp")) acceleration.y = -thrust;
-      else if (keyboard.isPressed("ArrowDown")) acceleration.y = thrust;
+      if (keyboard.isPressed("ArrowUp")) {
+        // TODO: Multiply vector by front facing vector
+        // Check this.
+        const { vertical, horizontal } = rotationMath();
 
-      if (keyboard.isPressed("ArrowRight")) acceleration.x = thrust;
-      else if (keyboard.isPressed("ArrowLeft")) acceleration.x = -thrust;
-
-      //AFTER ROTATION
-      /*
-      if (keyboard.isPressed("ArrowUp")) acceleration.y = -thrust;
-      else if (keyboard.isPressed("ArrowDown")) acceleration.y = thrust;
-
-      if (keyboard.isPressed("ArrowRight")) rotationAcceleration.x = thrust;
-      else if (keyboard.isPressed("ArrowLeft")) acceleration.x = -thrust;
-        */
-      //
+        acceleration.y = -thrust * vertical;
+        acceleration.x = -thrust * horizontal;
+      }
+      if (keyboard.isPressed("ArrowRight"))
+        rotationAcceleration = rotationThrust;
+      else if (keyboard.isPressed("ArrowLeft"))
+        rotationAcceleration = -rotationThrust;
 
       // update physics
       //update rotational physics
-      //rotationVelocity = deltaTime*rotationAcceleration;
-      //rotationAngle = deltaTime*rotationVelocity
+      rotationVelocity += deltaTime * rotationAcceleration;
+      rotationAngle += deltaTime * rotationVelocity;
 
       acceleration.y = gravity + acceleration.y;
 
@@ -75,7 +80,7 @@ export function createShip() {
       )! as any as SVGGElement;
       element.setAttribute(
         "transform",
-        `translate(${position.x}, ${position.y}) rotate(-45)`
+        `translate(${position.x}, ${position.y}) rotate(${rotationAngle})`
       );
     },
   };

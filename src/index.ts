@@ -1,12 +1,15 @@
 import { createHud } from "./hud";
 import { createShip } from "./ship";
 import { keyboardControls } from "./keyboardControls";
+import { createGround } from "./ground";
 
 import "./index.css";
 
 const hud = createHud();
-const ship = createShip();
 const keyboard = keyboardControls();
+
+const ship = createShip();
+const ground = createGround();
 
 let lastFrameTime = Date.now();
 
@@ -21,8 +24,11 @@ function update() {
   requestAnimationFrame(() => update());
 }
 
-document.getElementById("hud")!.innerHTML = hud.html();
-document.getElementById("canvas")!.innerHTML = ship.html();
+document.getElementById("hud")!.innerHTML = hud.render();
+document.getElementById("canvas")!.innerHTML = `
+  ${ship.render()}
+  ${ground.render()}
+`;
 
 update();
 hud.scheduleUpdates();
