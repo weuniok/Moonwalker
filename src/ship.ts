@@ -3,8 +3,8 @@ import { clamp, Vector2 } from "./math";
 
 // const GRAVITY = 9.81 / 500_000;
 const meterConversion = 1 / 500_000;
-// const gravity = 9.81 * meterConversion;
-const gravity = 0;
+const gravity = 9.81 * meterConversion;
+// const gravity = 0;
 
 const worldBounds = {
   top: 0,
@@ -17,7 +17,8 @@ export function createShip() {
   const position = new Vector2(500, 500);
   const velocity = Vector2.zero();
   const acceleration = Vector2.zero();
-  const thrust: number = 0.0001;
+  const thrust: number = 3 * gravity;
+  //const thrust: number = 0.0001;
   const rotationThrust: number = 90 * 0.5 * meterConversion;
   const safeVelocity: number = 0.001; //safe velocity for no kaboom on collision
   //rotation variables
@@ -51,8 +52,8 @@ export function createShip() {
         // Check this.
         const { vertical, horizontal } = rotationMath();
 
-        acceleration.y = -thrust * vertical;  //because y axis is downwards
-        acceleration.x = thrust * horizontal;
+        acceleration.y = -thrust * vertical;  // - because y axis is downwards
+        acceleration.x = thrust * horizontal; 
       }
       if (keyboard.isPressed("ArrowRight"))
         rotationAcceleration = rotationThrust;
@@ -62,15 +63,15 @@ export function createShip() {
       // update physics
       //update rotational physics
       rotationVelocity += deltaTime * rotationAcceleration;
-      rotationAngle += deltaTime * rotationVelocity;
+      rotationAngle += 0.5 * deltaTime * rotationVelocity;
 
       acceleration.y = gravity + acceleration.y;
 
       //update linear physics
       velocity.x += deltaTime * acceleration.x;
       velocity.y += deltaTime * acceleration.y;
-      position.x += deltaTime * velocity.x;
-      position.y += deltaTime * velocity.y;
+      position.x += 0.5 * deltaTime * velocity.x;
+      position.y += 0.5 * deltaTime * velocity.y;
 
       clampToWorldBounds(position, velocity);
 
