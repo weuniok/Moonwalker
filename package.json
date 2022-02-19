@@ -7,7 +7,9 @@
   "scripts": {
     "dev": "parcel src/index.html --open",
     "build": "parcel build src/index.html",
-    "test": "vitest"
+    "test": "vitest",
+    "lint": "echo 👌",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "parcel": "^2.3.2",
