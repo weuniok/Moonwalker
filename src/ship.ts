@@ -24,9 +24,10 @@ export function createShip() {
   //rotation variables
   let rotationAngle = 0; //angle measured clockwise from upwards direction in degrees;
   const rotationMath = () => ({
-    horizontal: Math.sin(rotationAngle * Math.PI/180), // * Math.PI/180  == degrees to radians conversion
-    vertical: Math.cos(rotationAngle * Math.PI/180),
+    horizontal: Math.sin((rotationAngle * Math.PI) / 180), // * Math.PI/180  == degrees to radians conversion
+    vertical: Math.cos((rotationAngle * Math.PI) / 180),
   });
+
   let rotationAcceleration = 0;
   let rotationVelocity = 0;
 
@@ -38,9 +39,10 @@ export function createShip() {
         </g>
       `;
     },
+    getStats() {
+      return { position, velocity, acceleration, rotationAngle };
+    },
     update(deltaTime: number, keyboard: KeyboardControls) {
-      console.log("rotationAngle.value", rotationAngle);
-
       // react to controls
       acceleration.x = 0;
       acceleration.y = 0;
@@ -52,8 +54,8 @@ export function createShip() {
         // Check this.
         const { vertical, horizontal } = rotationMath();
 
-        acceleration.y = -thrust * vertical;  // - because y axis is downwards
-        acceleration.x = thrust * horizontal; 
+        acceleration.y = -thrust * vertical; // - because y axis is downwards
+        acceleration.x = thrust * horizontal;
       }
       if (keyboard.isPressed("ArrowRight"))
         rotationAcceleration = rotationThrust;

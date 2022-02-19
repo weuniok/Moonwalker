@@ -5,11 +5,11 @@ import { createGround } from "./ground";
 
 import "./index.css";
 
-const hud = createHud();
-const keyboard = keyboardControls();
-
 const ship = createShip();
 const ground = createGround();
+
+const hud = createHud({ getShipStats: ship.getStats });
+const keyboard = keyboardControls();
 
 let lastFrameTime = Date.now();
 

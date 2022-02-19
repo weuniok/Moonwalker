@@ -1,11 +1,26 @@
+:root {
+  --white: white;
+  --slate-50: #f8fafc;
+  --slate-100: #f1f5f9;
+  --slate-200: #e2e8f0;
+  --slate-300: #cbd5e1;
+  --slate-400: #94a3b8;
+  --slate-500: #64748b;
+  --slate-600: #475569;
+  --slate-700: #334155;
+  --slate-800: #1e293b;
+  --slate-900: #0f172a;
+  --slate-black: #111316;
+}
+
 * {
   box-sizing: border-box;
 }
 
 html {
-  background-color: rgb(20, 21, 21);
+  background-color: var(--slate-black);
   font-family: monospace;
-  color: white;
+  color: var(--slate-50);
   font-size: 20px;
 }
 
@@ -22,6 +37,17 @@ body {
   width: 100%;
   padding: 0.5em;
   font-size: 0.825rem;
+  color: var(--slate-400);
+  pointer-events: none;
+}
+
+dt {
+  padding-top: 0.5em;
+  color: var(--slate-500);
+}
+dd {
+  margin: 0;
+  color: var(--slate-400);
 }
 
 #spaceship {
