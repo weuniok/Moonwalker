@@ -8,6 +8,8 @@
     "allowJs": true,
     "lib": ["ESNext", "dom"],
     "rootDir": "src",
-    "moduleResolution": "node"
-  }
+    "moduleResolution": "node",
+    "skipLibCheck": true
+  },
+  "include": ["src"]
 }

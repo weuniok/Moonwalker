@@ -6,10 +6,16 @@
   "license": "ISC",
   "scripts": {
     "dev": "parcel src/index.html --open",
-    "build": "parcel build src/index.html"
+    "build": "parcel build src/index.html",
+    "test": "vitest",
+    "lint": "echo 👌",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "parcel": "^2.3.2",
     "typescript": "^4.5.5"
+  },
+  "dependencies": {
+    "vitest": "^0.4.2"
   }
 }
