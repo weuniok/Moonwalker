@@ -20,9 +20,9 @@ export function createShip() {
   const thrust: number = 3 * gravity;
   //const thrust: number = 0.0001;
   const rotationThrust: number = 90 * 0.5 * meterConversion;
-  const safeVelocity: number = 0.001; //safe velocity for no kaboom on collision
+  const safeVelocity: number = 0.001; // safe velocity for no kaboom on collision
   //rotation variables
-  let rotationAngle = 0; //angle measured clockwise from upwards direction in degrees;
+  let rotationAngle = 0; // angle measured clockwise from upwards direction in degrees;
   const rotationMath = () => ({
     horizontal: Math.sin((rotationAngle * Math.PI) / 180), // * Math.PI/180  == degrees to radians conversion
     vertical: Math.cos((rotationAngle * Math.PI) / 180),
@@ -43,15 +43,20 @@ export function createShip() {
       return { position, velocity, acceleration, rotationAngle };
     },
     update(deltaTime: number, keyboard: KeyboardControls) {
-      // react to controls
+      // reset acceleration
       acceleration.x = 0;
       acceleration.y = 0;
       rotationAcceleration = 0;
 
+      // loop rotationAngle
+      rotationAngle = rotationAngle%360; 
+      if (rotationAngle > 180)
+        rotationAngle = rotationAngle - 360;
+
+      // react to controls
       if (keyboard.isPressed("ArrowUp")) {
         // TODO: Multiply vector by front facing vector
         // what does it mean^
-        // Check this.
         const { vertical, horizontal } = rotationMath();
 
         acceleration.y = -thrust * vertical; // - because y axis is downwards
@@ -69,7 +74,7 @@ export function createShip() {
 
       acceleration.y = gravity + acceleration.y;
 
-      //update linear physics
+      // update linear physics
       velocity.x += deltaTime * acceleration.x;
       velocity.y += deltaTime * acceleration.y;
       position.x += 0.5 * deltaTime * velocity.x;
