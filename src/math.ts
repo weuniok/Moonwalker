@@ -4,6 +4,10 @@ export class Vector2 {
   static zero() {
     return new Vector2(0, 0);
   }
+
+  sqrMagnitude() {
+    return this.x * this.x + this.y * this.y;
+  }
 }
 
 export function clamp(min: number, value: number, max: number) {

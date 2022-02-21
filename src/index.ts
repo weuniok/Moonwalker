@@ -5,11 +5,12 @@ import { createGround } from "./ground";
 
 import "./index.css";
 
-const ship = createShip();
+const keyboard = keyboardControls();
+
+const ship = createShip(keyboard);
 const ground = createGround();
 
 const hud = createHud({ getShipStats: ship.getStats });
-const keyboard = keyboardControls();
 
 let lastFrameTime = Date.now();
 
@@ -18,7 +19,7 @@ function update() {
   const deltaTime = now - lastFrameTime;
 
   hud.calculateFps(deltaTime);
-  ship.update(deltaTime, keyboard);
+  ship.update(deltaTime);
 
   lastFrameTime = now;
   requestAnimationFrame(() => update());

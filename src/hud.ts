@@ -42,7 +42,7 @@ export function createHud({
             dt.innerText = key;
             dd.innerText =
               value instanceof Vector2
-                ? `(${formatNumber(value.x)}, ${formatNumber(value.y)})`
+                ? `${formatNumber(value.x)}, ${formatNumber(value.y)}`
                 : `${formatNumber(value)}`;
           });
         }

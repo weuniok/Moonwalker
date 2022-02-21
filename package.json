@@ -17,5 +17,6 @@
   },
   "dependencies": {
     "vitest": "^0.4.2"
-  }
+  },
+  "packageManager": "pnpm@6.31.0"
 }
