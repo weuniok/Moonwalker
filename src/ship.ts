@@ -113,7 +113,7 @@ export function createShip(keyboard: KeyboardControls) {
 
 
       if (keyboard.isPressed("ArrowUp")) {
-        // Makes thrust increase when button is held longer.
+        // makes thrust increase when button is held longer.
         const deltaThrust = maxThrust * 0.002;
         thrust = Math.min(maxThrust, thrust + deltaTime * deltaThrust);
       } 
@@ -131,7 +131,7 @@ export function createShip(keyboard: KeyboardControls) {
       }
 
       // update physics
-      //update rotational physics
+      // update rotational physics
       rotationVelocity += deltaTime * rotationAcceleration;
       rotationAngle += 0.5 * deltaTime * rotationVelocity;
 
