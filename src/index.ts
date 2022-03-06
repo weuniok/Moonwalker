@@ -10,7 +10,7 @@ const keyboard = keyboardControls();
 const ship = createShip(keyboard);
 const ground = createGround();
 
-const hud = createHud({ getShipStats: ship.getStats });
+const hud = createHud({ getShipStats: ship.readState });
 
 let lastFrameTime = Date.now();
 

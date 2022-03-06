@@ -30,12 +30,13 @@ const exhaustShape = [
   new Vector2(shipWidth / 2, shipHeight / 2 + shipWidth / 16),
 ];
 
+const maxThrust = 0.00015;
+
 export function createShip(keyboard: KeyboardControls) {
   const position = new Vector2(500, 500);
   const velocity = Vector2.zero();
   const acceleration = Vector2.zero();
 
-  const maxThrust = 0.00015;
   let thrust = 0;
 
   const rotationThrust: number = 90 * 0.5 * meterConversion;
@@ -45,80 +46,70 @@ export function createShip(keyboard: KeyboardControls) {
   let rotationAcceleration = 0;
   let rotationVelocity = 0;
 
+  function readState() {
+    return {
+      position,
+      velocity,
+      acceleration,
+      thrust,
+      rotationAngle,
+    } as const;
+  }
+
   function updateUI() {
-    const element = document.getElementById("spaceship")! as any as SVGGElement;
+    const state = readState();
 
-    element.setAttribute(
-      "transform",
-      `translate(${position.x}, ${position.y}) rotate(${rotationAngle})`
-    );
-
-    const exhaust = document.getElementById(
-      "spaceship-exhaust"
-    )! as any as SVGPolylineElement;
-    const exhaustOpacity = thrust / maxThrust;
-
-    exhaust.style.strokeOpacity = String(exhaustOpacity);
-
-    //flight path
-    const a = new Vector2(position.x, position.y);
-    const b = a.add(velocity.multiplyScalar(100));
-
-    const pathIndicator = document.getElementById("spaceship-path-prediction")!;
-
-    pathIndicator.setAttribute("x1", String(a.x));
-    pathIndicator.setAttribute("y1", String(a.y));
-    pathIndicator.setAttribute("x2", String(b.x));
-    pathIndicator.setAttribute("y2", String(b.y));
+    updateExhaustUI(state);
+    updateFlightPathPredictionUI(state);
   }
 
   return {
+    readState,
     render() {
       return `
-        <line
-          id="spaceship-path-prediction"
-          x1="0"
-          x2="150"
-          y1="0"
-          y2="150"
-          stroke="var(--slate-700)"
-          stroke-width="2"
-          stroke-dasharray="4 4 4 4"
-        />
-        <g id="spaceship">
-          ${
-            DEBUG
-              ? `
-            <rect
-              width="${shipWidth}"
-              height="${shipHeight}"
-              x="-${shipWidth / 2}"
-              y="-${shipHeight / 2}"
-              fill="none"
-              stroke="var(--slate-800)"
+        <g id="spaceship-ui">
+          <line
+            id="spaceship-path-prediction"
+            x1="0"
+            x2="150"
+            y1="0"
+            y2="150"
+            stroke="var(--slate-700)"
+            stroke-width="2"
+            stroke-dasharray="4 4 4 4"
+          />
+          <g id="spaceship">
+            ${
+              DEBUG
+                ? `
+              <rect
+                width="${shipWidth}"
+                height="${shipHeight}"
+                x="-${shipWidth / 2}"
+                y="-${shipHeight / 2}"
+                fill="none"
+                stroke="var(--slate-800)"
+                stroke-width="2"
+              />
+            `
+                : ""
+            }        
+            <polygon
+              points="${svgPoints(shipShape)}"
+              fill="var(--slate-black)"
+              stroke="var(--slate-400)"
               stroke-width="2"
             />
-          `
-              : ""
-          }        
-          <polygon
-            points="${svgPoints(shipShape)}"
-            fill="var(--slate-black)"
-            stroke="var(--slate-400)"
-            stroke-width="2"
-          />
-          <polyline
-            id="spaceship-exhaust"
-            points="${svgPoints(exhaustShape)}"
-            fill="none"
-            stroke="#0ce4f0"
-            stroke-width="2"
-          />
+            <polyline
+              id="spaceship-exhaust"
+              points="${svgPoints(exhaustShape)}"
+              fill="none"
+              stroke="#0ce4f0"
+              stroke-width="2"
+            />
+          </g>
         </g>
       `;
-    },
-    getStats() {
-      return { position, velocity, acceleration, rotationAngle };
     },
     update(deltaTime: number) {
       // reset acceleration
@@ -172,6 +163,9 @@ export function createShip(keyboard: KeyboardControls) {
   };
 }
 
+type Ship = ReturnType<typeof createShip>;
+type ShipState = ReturnType<Ship["readState"]>;
+
 function clampToWorldBounds(position: Vector2, velocity: Vector2) {
   const newPosX = clamp(
     worldBounds.left + shipWidth / 2,
@@ -196,4 +190,32 @@ function clampToWorldBounds(position: Vector2, velocity: Vector2) {
 
 function svgPoints(points: Vector2[]) {
   return points.map((v) => `${v.x},${v.y}`).join(" ");
+}
+
+function updateFlightPathPredictionUI({ position, velocity }: ShipState) {
+  const a = new Vector2(position.x, position.y);
+  const b = a.add(velocity.multiplyScalar(100));
+
+  const pathIndicator = document.getElementById("spaceship-path-prediction")!;
+
+  pathIndicator.setAttribute("x1", String(a.x));
+  pathIndicator.setAttribute("y1", String(a.y));
+  pathIndicator.setAttribute("x2", String(b.x));
+  pathIndicator.setAttribute("y2", String(b.y));
+}
+
+function updateExhaustUI({ position, rotationAngle, thrust }: ShipState) {
+  const element = document.getElementById("spaceship")! as any as SVGGElement;
+
+  element.setAttribute(
+    "transform",
+    `translate(${position.x}, ${position.y}) rotate(${rotationAngle})`
+  );
+
+  const exhaust = document.getElementById(
+    "spaceship-exhaust"
+  )! as any as SVGPolylineElement;
+  const exhaustOpacity = thrust / maxThrust;
+
+  exhaust.style.strokeOpacity = String(exhaustOpacity);
 }
