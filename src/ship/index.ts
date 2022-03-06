@@ -1,14 +1,16 @@
-import { KeyboardControls } from "./keyboardControls";
-import { clamp, Vector2 } from "./math";
+import { KeyboardControls } from "../keyboardControls";
+import { clamp, Vector2 } from "../math";
+import { svgPoints } from "../ui";
+
+import { maxThrust, shipHeight, shipWidth } from "./constant";
+import { createExhaust } from "./exhaust";
+import { createFlightPathPrediction } from "./flightPathPrediction";
 
 const DEBUG = false;
 
 const meterConversion = 1 / 500_000;
 const gravity = 9.81 * meterConversion;
 // const gravity = 0;
-
-const shipWidth = 20;
-const shipHeight = 20;
 
 const worldBounds = {
   top: 0,
@@ -22,15 +24,6 @@ const shipShape = [
   new Vector2(0, -shipHeight / 2),
   new Vector2(shipWidth / 2, shipHeight / 2),
 ];
-
-const exhaustShape = [
-  new Vector2(-shipWidth / 2, shipHeight / 2 + shipWidth / 16),
-  new Vector2(-1 * (shipWidth / 7), shipHeight),
-  new Vector2(1 * (shipWidth / 7), shipHeight),
-  new Vector2(shipWidth / 2, shipHeight / 2 + shipWidth / 16),
-];
-
-const maxThrust = 0.00015;
 
 export function createShip(keyboard: KeyboardControls) {
   const position = new Vector2(500, 500);
@@ -46,6 +39,9 @@ export function createShip(keyboard: KeyboardControls) {
   let rotationAcceleration = 0;
   let rotationVelocity = 0;
 
+  const exhaust = createExhaust();
+  const flightPathPrediction = createFlightPathPrediction();
+
   function readState() {
     return {
       position,
@@ -59,8 +55,8 @@ export function createShip(keyboard: KeyboardControls) {
   function updateUI() {
     const state = readState();
 
-    updateExhaustUI(state);
-    updateFlightPathPredictionUI(state);
+    exhaust.update(state);
+    flightPathPrediction.update(state);
   }
 
   return {
@@ -68,45 +64,16 @@ export function createShip(keyboard: KeyboardControls) {
     render() {
       return `
         <g id="spaceship-ui">
-          <line
-            id="spaceship-path-prediction"
-            x1="0"
-            x2="150"
-            y1="0"
-            y2="150"
-            stroke="var(--slate-700)"
-            stroke-width="2"
-            stroke-dasharray="4 4 4 4"
-          />
+          ${flightPathPrediction.render()}
           <g id="spaceship">
-            ${
-              DEBUG
-                ? `
-              <rect
-                width="${shipWidth}"
-                height="${shipHeight}"
-                x="-${shipWidth / 2}"
-                y="-${shipHeight / 2}"
-                fill="none"
-                stroke="var(--slate-800)"
-                stroke-width="2"
-              />
-            `
-                : ""
-            }        
+            ${renderDebugRect()}        
             <polygon
               points="${svgPoints(shipShape)}"
               fill="var(--slate-black)"
               stroke="var(--slate-400)"
               stroke-width="2"
             />
-            <polyline
-              id="spaceship-exhaust"
-              points="${svgPoints(exhaustShape)}"
-              fill="none"
-              stroke="#0ce4f0"
-              stroke-width="2"
-            />
+            ${exhaust.render()}
           </g>
         </g>
       `;
@@ -163,10 +130,8 @@ export function createShip(keyboard: KeyboardControls) {
   };
 }
 
-type Ship = ReturnType<typeof createShip>;
-type ShipState = ReturnType<Ship["readState"]>;
 
-function clampToWorldBounds(position: Vector2, velocity: Vector2) {
+function clampToWorldBounds(position: Vector2, velocity: Vector2): void {
   const newPosX = clamp(
     worldBounds.left + shipWidth / 2,
     position.x,
@@ -188,34 +153,20 @@ function clampToWorldBounds(position: Vector2, velocity: Vector2) {
   }
 }
 
-function svgPoints(points: Vector2[]) {
-  return points.map((v) => `${v.x},${v.y}`).join(" ");
-}
+function renderDebugRect() {
+  if (DEBUG) {
+    return `
+      <rect
+        width="${shipWidth}"
+        height="${shipHeight}"
+        x="-${shipWidth / 2}"
+        y="-${shipHeight / 2}"
+        fill="none"
+        stroke="var(--slate-800)"
+        stroke-width="2"
+      />
+    `;
+  }
 
-function updateFlightPathPredictionUI({ position, velocity }: ShipState) {
-  const a = new Vector2(position.x, position.y);
-  const b = a.add(velocity.multiplyScalar(100));
-
-  const pathIndicator = document.getElementById("spaceship-path-prediction")!;
-
-  pathIndicator.setAttribute("x1", String(a.x));
-  pathIndicator.setAttribute("y1", String(a.y));
-  pathIndicator.setAttribute("x2", String(b.x));
-  pathIndicator.setAttribute("y2", String(b.y));
-}
-
-function updateExhaustUI({ position, rotationAngle, thrust }: ShipState) {
-  const element = document.getElementById("spaceship")! as any as SVGGElement;
-
-  element.setAttribute(
-    "transform",
-    `translate(${position.x}, ${position.y}) rotate(${rotationAngle})`
-  );
-
-  const exhaust = document.getElementById(
-    "spaceship-exhaust"
-  )! as any as SVGPolylineElement;
-  const exhaustOpacity = thrust / maxThrust;
-
-  exhaust.style.strokeOpacity = String(exhaustOpacity);
+  return "";
 }
