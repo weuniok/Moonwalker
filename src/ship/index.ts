@@ -5,6 +5,7 @@ import { svgPoints } from "../ui";
 import { maxThrust, shipHeight, shipWidth } from "./constant";
 import { createExhaust } from "./exhaust";
 import { createFlightPathPrediction } from "./flightPathPrediction";
+import { createTrail } from "./trail";
 
 const DEBUG = false;
 
@@ -26,6 +27,8 @@ const shipShape = [
 ];
 
 export function createShip(keyboard: KeyboardControls) {
+  // #region state
+
   const position = new Vector2(500, 500);
   const velocity = Vector2.zero();
   const acceleration = Vector2.zero();
@@ -39,8 +42,14 @@ export function createShip(keyboard: KeyboardControls) {
   let rotationAcceleration = 0;
   let rotationVelocity = 0;
 
+  // #endregion state
+  // #region components
+
   const exhaust = createExhaust();
   const flightPathPrediction = createFlightPathPrediction();
+  const trail = createTrail();
+
+  // #endregion components
 
   function readState() {
     return {
@@ -57,6 +66,7 @@ export function createShip(keyboard: KeyboardControls) {
 
     exhaust.update(state);
     flightPathPrediction.update(state);
+    trail.update(state);
   }
 
   return {
@@ -65,6 +75,7 @@ export function createShip(keyboard: KeyboardControls) {
       return `
         <g id="spaceship-ui">
           ${flightPathPrediction.render()}
+          ${trail.render()}
           <g id="spaceship">
             ${renderDebugRect()}        
             <polygon
@@ -129,7 +140,6 @@ export function createShip(keyboard: KeyboardControls) {
     },
   };
 }
-
 
 function clampToWorldBounds(position: Vector2, velocity: Vector2): void {
   const newPosX = clamp(

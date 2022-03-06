@@ -1,4 +1,4 @@
-import { Vector2 } from './math';
+import { Vector2 } from "./math";
 
 export function toAttributesString(
   x: number,
@@ -11,6 +11,6 @@ export function toAttributesString(
     .join(" ");
 }
 
-export function svgPoints(points: Vector2[]) {
+export function svgPoints(points: { x: number; y: number }[]) {
   return points.map((v) => `${v.x},${v.y}`).join(" ");
 }
