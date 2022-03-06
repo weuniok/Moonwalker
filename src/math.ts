@@ -5,6 +5,14 @@ export class Vector2 {
     return new Vector2(0, 0);
   }
 
+  add(u: Vector2): Vector2 {
+    return new Vector2(this.x + u.x, this.y + u.y);
+  }
+
+  multiplyScalar(k: number): Vector2 {
+    return new Vector2(this.x * k, this.y * k);
+  }
+
   sqrMagnitude() {
     return this.x * this.x + this.y * this.y;
   }

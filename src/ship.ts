@@ -59,11 +59,32 @@ export function createShip(keyboard: KeyboardControls) {
     const exhaustOpacity = thrust / maxThrust;
 
     exhaust.style.strokeOpacity = String(exhaustOpacity);
+
+    //flight path
+    const a = new Vector2(position.x, position.y);
+    const b = a.add(velocity.multiplyScalar(100));
+
+    const pathIndicator = document.getElementById("spaceship-path-prediction")!;
+
+    pathIndicator.setAttribute("x1", String(a.x));
+    pathIndicator.setAttribute("y1", String(a.y));
+    pathIndicator.setAttribute("x2", String(b.x));
+    pathIndicator.setAttribute("y2", String(b.y));
   }
 
   return {
     render() {
       return `
+        <line
+          id="spaceship-path-prediction"
+          x1="0"
+          x2="150"
+          y1="0"
+          y2="150"
+          stroke="var(--slate-700)"
+          stroke-width="2"
+          stroke-dasharray="4 4 4 4"
+        />
         <g id="spaceship">
           ${
             DEBUG
@@ -82,7 +103,7 @@ export function createShip(keyboard: KeyboardControls) {
           }        
           <polygon
             points="${svgPoints(shipShape)}"
-            fill="none"
+            fill="var(--slate-black)"
             stroke="var(--slate-400)"
             stroke-width="2"
           />
@@ -150,6 +171,7 @@ export function createShip(keyboard: KeyboardControls) {
     },
   };
 }
+
 function clampToWorldBounds(position: Vector2, velocity: Vector2) {
   const newPosX = clamp(
     worldBounds.left + shipWidth / 2,
