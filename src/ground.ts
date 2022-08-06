@@ -22,10 +22,10 @@ export function createGround() {
     render() {
       return `
         <polyline
-          id="spaceship-trail"
+          id="terrain"
           points="${svgPoints(terrain)}"
           fill="none"
-          stroke="#64748b"
+          stroke="var(--slate-500)"
           stroke-width="2"
           stroke-opacity="1"
         />
@@ -46,10 +46,27 @@ function generate2dMountains({
 }): Vector2[] {
   const res: Vector2[] = [];
 
+  // generate rough points
   for (let x = 0; x < width; x += resolution) {
     const y = Math.random() * maxHeight;
 
     res.push(new Vector2(x, y));
+  }
+
+  // smooth
+  for (let i = 0; i < res.length; i++) {
+    const neighborhood = [
+      res[i - 2],
+      res[i - 1],
+      res[i],
+      res[i + 1],
+      res[i + 2],
+    ].filter(Boolean);
+
+    const avgY =
+      neighborhood.reduce((acc, cur) => acc + cur.y, 0) / neighborhood.length;
+
+    res[i].y = avgY;
   }
 
   return res;
