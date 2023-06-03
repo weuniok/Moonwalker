@@ -9,12 +9,22 @@ export class Vector2 {
     return new Vector2(this.x + u.x, this.y + u.y);
   }
 
+  subtract(u: Vector2): Vector2 {
+    return new Vector2(this.x - u.x, this.y - u.y);
+  }
+
   multiplyScalar(k: number): Vector2 {
     return new Vector2(this.x * k, this.y * k);
   }
 
   sqrMagnitude() {
     return this.x * this.x + this.y * this.y;
+  }
+
+  normalize(): Vector2 {
+    const magnitude = Math.sqrt(this.sqrMagnitude());
+
+    return new Vector2(this.x / magnitude, this.y / magnitude);
   }
 }
 
