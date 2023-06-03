@@ -1,8 +1,15 @@
-import { Vector2 } from "../math";
 import { svgPoints } from "../ui";
 import { ShipState } from "./types";
 
-export function createTrail() {
+export function createTrail(
+  id: string,
+  {
+    stroke = "var(--slate-200)",
+    strokeWidth = 15,
+    strokeOpacity = 0.02,
+    strokeDasharray = "20 20 20",
+  } = {}
+) {
   //
   const lastPositions: { x: number; y: number }[] = [];
 
@@ -10,23 +17,23 @@ export function createTrail() {
     render(): string {
       return `
         <polyline
-          id="spaceship-trail"
+          id="${id}"
           points="${svgPoints(lastPositions)}"
           fill="none"
-          stroke="var(--slate-200)"
-          stroke-width="15"
-          stroke-opacity="0.02"
-          stroke-dasharray="20 20 20"
+          stroke="${stroke}"
+          stroke-width="${strokeWidth}"
+          stroke-opacity="${strokeOpacity}"
+          stroke-dasharray="${strokeDasharray}"
         />
       `;
     },
-    update({ position }: ShipState): void {
+    update({ position }: Pick<ShipState, "position">): void {
       lastPositions.push({ ...position });
       if (lastPositions.length > 75) {
         lastPositions.shift();
       }
 
-      const element = document.getElementById(`spaceship-trail`)!;
+      const element = document.getElementById(id)!;
       element.setAttribute("points", svgPoints(lastPositions));
     },
   };

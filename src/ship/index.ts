@@ -1,19 +1,17 @@
 import { KeyboardControls } from "../keyboardControls";
-import { clamp, Vector2 } from "../math";
+import { Vector2 } from "../math";
 import { svgPoints } from "../ui";
+import { clampToWorldBounds } from "../clampToWorldBounds";
 
-import { maxThrust, shipHeight, shipWidth } from "./constant";
+import { gravity, meterConversion } from "../constant";
 import { createExhaust } from "./exhaust";
 import { createFlightPathPrediction } from "./flightPathPrediction";
 import { createTrail } from "./trail";
+import { shipWidth, shipHeight, maxThrust } from "./shipConfig";
 
 const DEBUG = false;
 
-const meterConversion = 1 / 500_000;
-const gravity = 9.81 * meterConversion;
-// const gravity = 0;
-
-const worldBounds = {
+export const worldBounds = {
   top: 0,
   right: 1000,
   down: 1000,
@@ -45,9 +43,13 @@ export function createShip(keyboard: KeyboardControls) {
   // #endregion state
   // #region components
 
-  const exhaust = createExhaust();
+  const exhaust = createExhaust({
+    maxThrust,
+    shipHeight,
+    shipWidth,
+  });
   const flightPathPrediction = createFlightPathPrediction();
-  const trail = createTrail();
+  const trail = createTrail("spaceship-trail");
 
   // #endregion components
 
@@ -63,6 +65,13 @@ export function createShip(keyboard: KeyboardControls) {
 
   function updateUI() {
     const state = readState();
+
+    const element = document.getElementById("spaceship")! as any as SVGGElement;
+
+    element.setAttribute(
+      "transform",
+      `translate(${position.x}, ${position.y}) rotate(${rotationAngle})`
+    );
 
     exhaust.update(state);
     flightPathPrediction.update(state);
@@ -134,33 +143,11 @@ export function createShip(keyboard: KeyboardControls) {
       position.x += 0.5 * deltaTime * velocity.x;
       position.y += 0.5 * deltaTime * velocity.y;
 
-      clampToWorldBounds(position, velocity);
+      clampToWorldBounds(position, velocity, shipWidth);
 
       updateUI();
     },
   };
-}
-
-function clampToWorldBounds(position: Vector2, velocity: Vector2): void {
-  const newPosX = clamp(
-    worldBounds.left + shipWidth / 2,
-    position.x,
-    worldBounds.right - shipWidth / 2
-  );
-  const newPosY = clamp(
-    worldBounds.top + shipWidth / 2,
-    position.y,
-    worldBounds.down - shipWidth / 2
-  );
-
-  if (newPosX !== position.x) {
-    position.x = newPosX;
-    velocity.x = 0;
-  }
-  if (newPosY !== position.y) {
-    position.y = newPosY;
-    velocity.y = 0;
-  }
 }
 
 function renderDebugRect() {

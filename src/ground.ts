@@ -1,5 +1,5 @@
 import { Vector2 } from "./math";
-import { svgPoints, toAttributesString } from "./ui";
+import { svgPoints } from "./ui";
 
 const CANVAS_WIDTH = 1000;
 const CANVAS_HEIGHT = 1000;
