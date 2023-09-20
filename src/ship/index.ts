@@ -62,6 +62,12 @@ export function createShip(keyboard: KeyboardControls) {
   }
 
   function updateUI() {
+    const element = document.getElementById("spaceship")! as any as SVGGElement;
+    element.setAttribute(
+      "transform",
+      `translate(${position.x}, ${position.y}) rotate(${rotationAngle})`
+    );
+
     const state = readState();
 
     exhaust.update(state);
