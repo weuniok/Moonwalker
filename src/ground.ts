@@ -18,7 +18,14 @@ export function createGround() {
   });
   terrain = terrain.map((u) => u.add(v0));
 
+  function readState() {
+    return {
+      terrain,
+    } as const;
+  }
+
   return {
+    readState,
     render() {
       return `
         <polyline

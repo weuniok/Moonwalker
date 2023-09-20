@@ -65,8 +65,9 @@ dd {
 }
 
 .explosion {
-  fill: var(--red);
-  fill-opacity: 0.1;
   stroke: var(--red);
   overflow: visible;
+
+  & polyline { fill: var(--red); fill-opacity: 0.1; }
+  & circle { fill: var(--red) }
 }

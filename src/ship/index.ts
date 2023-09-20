@@ -75,8 +75,13 @@ export function createShip(keyboard: KeyboardControls) {
     trail.update(state);
   }
 
+  function getVertices() {
+    return shipShape.map((vertex) => (vertex.add(position)))
+  };
+
   return {
     readState,
+    getVertices,
     render() {
       return `
         <g id="spaceship-ui">

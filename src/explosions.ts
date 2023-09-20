@@ -3,13 +3,13 @@ import { svgPoints } from "./ui";
 
 export function mountExplosion({ id }: { id: string }) {
   return `
-    <svg id="${id}" x="40" y="40" class="explosion" style="display: none;"></svg>
+    <svg id="${id}" x="40" y="40" class="explosion" style="display: flex;"></svg>
   `;
 }
 
-export function showExplosion(position: Vector2) {
-  const outerRadius = 14;
-  const innerRadius = 7;
+export function showExplosion(explosionPos: Vector2, markerPos?: Vector2) {
+  const outerRadius = 16;
+  const innerRadius = 8;
 
   const shipExplosion = document.getElementById(
     "ship-explosion"
@@ -18,8 +18,8 @@ export function showExplosion(position: Vector2) {
   if (shipExplosion.style.display === "block") return;
 
   shipExplosion.style.display = "block";
-  shipExplosion.setAttribute("x", `${position.x}`);
-  shipExplosion.setAttribute("y", `${position.y}`);
+  shipExplosion.setAttribute("x", `${explosionPos.x}`);
+  shipExplosion.setAttribute("y", `${explosionPos.y}`);
 
   const strokeWidth = 1 + Math.round(Math.random());
 
@@ -27,12 +27,20 @@ export function showExplosion(position: Vector2) {
   const explosionPoints = Array.from({ length: spikes * 2 }, (_, i) => {
     const angle = (Math.PI / spikes) * i * (1.05 - Math.random() * 0.1);
     let radius = i % 2 === 0 ? innerRadius : outerRadius;
-    const x = 5 + radius * Math.cos(angle);
-    const y = 5 + radius * Math.sin(angle);
+    const x = radius * Math.cos(angle);
+    const y = radius * Math.sin(angle);
     return { x: Math.floor(x), y: Math.floor(y) };
   });
   explosionPoints.push(explosionPoints[0]);
 
   const points = svgPoints(explosionPoints);
-  shipExplosion.innerHTML = `<polyline stroke-width="${strokeWidth}" points="${points}" />`;
+  markerPos &&= markerPos.subtract(explosionPos);
+  shipExplosion.innerHTML = `
+    ${
+      markerPos
+        ? `<circle cx="${markerPos.x}" cy="${markerPos.y}" r="3" />`
+        : ""
+    }
+    <polyline stroke-width="${strokeWidth}" points="${points}" />
+  `;
 }
