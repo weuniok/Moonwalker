@@ -3,9 +3,7 @@ import { svgPoints } from "./ui";
 
 export function mountExplosion({ id }: { id: string }) {
   return `
-    <svg id="${id}" x="40" y="40" class="explosion" style="display: none;">
-      
-    </svg>
+    <svg id="${id}" x="40" y="40" class="explosion" style="display: none;"></svg>
   `;
 }
 
@@ -16,6 +14,9 @@ export function showExplosion(position: Vector2) {
   const shipExplosion = document.getElementById(
     "ship-explosion"
   )! as unknown as SVGSVGElement;
+
+  if (shipExplosion.style.display === "block") return;
+
   shipExplosion.style.display = "block";
   shipExplosion.setAttribute("x", `${position.x}`);
   shipExplosion.setAttribute("y", `${position.y}`);

@@ -16,6 +16,11 @@ let lastFrameTime = Date.now();
 let isGameOver = false;
 
 function update() {
+  const now = Date.now();
+  const deltaTime = now - lastFrameTime;
+
+  hud.calculateFps(deltaTime);
+
   // we end the game randomly until we detect collisions
   const MISFORTUNE = 0.0025;
   let luck = Math.random();
@@ -25,17 +30,11 @@ function update() {
 
   if (isGameOver) {
     showExplosion(ship.readState().position);
-    return;
+  } else {
+    ship.update(deltaTime);
   }
 
-  const now = Date.now();
-  const deltaTime = now - lastFrameTime;
-
-  hud.calculateFps(deltaTime);
-  ship.update(deltaTime);
-
   lastFrameTime = now;
-
   requestAnimationFrame(() => update());
 }
 
