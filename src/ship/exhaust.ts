@@ -28,13 +28,6 @@ export function createExhaust() {
 }
 
 function updateExhaustUI({ position, rotationAngle, thrust }: ShipState) {
-  const element = document.getElementById("spaceship")! as any as SVGGElement;
-
-  element.setAttribute(
-    "transform",
-    `translate(${position.x}, ${position.y}) rotate(${rotationAngle})`
-  );
-
   const exhaust = document.getElementById(
     "spaceship-exhaust"
   )! as any as SVGPolylineElement;
