@@ -36,10 +36,14 @@ update();
 hud.scheduleUpdates();
 
 function mountExplosion() {
-  const spikes = Math.floor(Math.random() * 5) + 4; // Random number of spikes between 10 and 15
+  const outerRadius = 14;
+  const innerRadius = 7;
+  const strokeWidth = 1 + Math.round(Math.random());
+
+  const spikes = Math.floor(Math.random() * 4) + 5; // Random number of spikes between 10 and 15
   const explosionPoints = Array.from({ length: spikes * 2 }, (_, i) => {
-    const angle = (Math.PI / spikes) * i; // adjust angle for number of spikes
-    const radius = i % 2 === 0 ? 5 : 10; // alternate between inner and outer points
+    const angle = (Math.PI / spikes) * i * (1.05 - Math.random() * 0.1);
+    let radius = i % 2 === 0 ? innerRadius : outerRadius;
     const x = 5 + radius * Math.cos(angle);
     const y = 5 + radius * Math.sin(angle);
     return { x: Math.floor(x), y: Math.floor(y) };
@@ -48,7 +52,9 @@ function mountExplosion() {
 
   return `
     <svg x="40" y="40" class="explosion">
-      <polyline points="${svgPoints(explosionPoints)}" />
+      <polyline stroke-width="${strokeWidth}" points="${svgPoints(
+    explosionPoints
+  )}" />
     </svg>
   `;
 }
