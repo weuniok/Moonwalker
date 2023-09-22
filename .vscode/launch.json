@@ -1,0 +1,45 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Node (dev)",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run-script", "dev"],
+      "console": "integratedTerminal"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Node (prod)",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run-script", "prod"],
+      "console": "integratedTerminal"
+    },
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Chrome (server)",
+      "url": "http://localhost:8010",
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "type": "chrome",
+      "request": "launch",
+      "name": "Chrome (preview)",
+      "url": "http://localhost:8020",
+      "webRoot": "${workspaceFolder}"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Full-stack (prod)",
+      "configurations": ["Node (dev)", "Chrome (preview)"]
+    },
+    {
+      "name": "Full-stack (debug)",
+      "configurations": ["Node (dev)", "Chrome (server)"]
+    }
+  ]
+}

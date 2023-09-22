@@ -8,6 +8,7 @@
     "sourceMap": true,
     "allowJs": true,
     "lib": ["ESNext", "dom"],
+    "types": ["vite/client"],
     "rootDir": "src",
     "moduleResolution": "node",
     "skipLibCheck": true
