@@ -1,21 +1,13 @@
 import { Vector2, interpolateLinearly, findLinesIntersection } from "./math";
 
 export function createCollisions(
-  ship: {
-    getVertices: () => Vector2[];
-  },
-  ground: {
-    readState: () => { terrain: Vector2[] };
-  },
-  {
-    onCollision,
-  }: {
-    onCollision: (collidedVertex: Vector2) => void;
-  }
+  ship: { getVertices: () => Vector2[] },
+  ground: { terrain: Vector2[] },
+  { onCollision }: { onCollision: (collidedVertex: Vector2) => void }
 ) {
   function update() {
     const shipVertices: Vector2[] = ship.getVertices();
-    const groundVertices: Vector2[] = ground.readState().terrain;
+    const groundVertices: Vector2[] = ground.terrain;
 
     let shipLeft = Infinity;
     let shipRight = -Infinity;

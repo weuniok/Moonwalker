@@ -7,6 +7,7 @@ import { createCollisions } from "./collisions";
 
 import "./index.css";
 import { Vector2 } from "./math";
+import { createLandingPad } from "./landingPad";
 
 let shipExplosionPoint: Vector2 | null = null;
 
@@ -18,6 +19,7 @@ const collisions = createCollisions(ship, ground, {
     shipExplosionPoint = collidedVertex;
   },
 });
+const landingPad = createLandingPad(ground);
 
 const hud = createHud({ getShipStats: ship.readState });
 
@@ -42,8 +44,9 @@ function update() {
 
 document.getElementById("hud")!.innerHTML = hud.render();
 document.getElementById("canvas")!.innerHTML = `
-  ${ship.render()}
+  ${landingPad.render()}
   ${ground.render()}
+  ${ship.render()}
   ${mountExplosion({ id: "ship-explosion" })}
 `;
 

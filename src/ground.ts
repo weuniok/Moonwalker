@@ -1,5 +1,5 @@
 import { Vector2 } from "./math";
-import { svgPoints, toAttributesString } from "./ui";
+import { svgPoints } from "./ui";
 
 const CANVAS_WIDTH = 1000;
 const CANVAS_HEIGHT = 1000;
@@ -18,20 +18,20 @@ export function createGround() {
   });
   terrain = terrain.map((u) => u.add(v0));
 
-  function readState() {
-    return {
-      terrain,
-    } as const;
-  }
-
   return {
-    readState,
+    get terrain() {
+      return terrain;
+    },
     render() {
       return `
         <polyline
           id="terrain"
-          points="${svgPoints(terrain)}"
-          fill="none"
+          points="${svgPoints([
+            new Vector2(0, CANVAS_HEIGHT),
+            ...terrain,
+            new Vector2(CANVAS_WIDTH, CANVAS_HEIGHT),
+          ])}"
+          fill="var(--slate-black)"
           stroke="var(--slate-500)"
           stroke-width="2"
           stroke-opacity="1"

@@ -68,6 +68,25 @@ dd {
   stroke: var(--red);
   overflow: visible;
 
-  & polyline { fill: var(--red); fill-opacity: 0.1; }
-  & circle { fill: var(--red) }
+  & polyline {
+    fill: var(--red);
+    fill-opacity: 0.1;
+  }
+  & circle {
+    fill: var(--red);
+  }
+}
+
+#landing-pad {
+  animation: pulse 2s ease-in-out infinite alternate;
+
+}
+
+@keyframes pulse {
+  from {
+    stroke-opacity: 0;
+  }
+  to {
+    stroke-opacity: 0.2;
+  }
 }
