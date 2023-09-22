@@ -13,6 +13,10 @@ export class Vector2 {
     return new Vector2(this.x - u.x, this.y - u.y);
   }
 
+  divideScalar(k: number): Vector2 {
+    return new Vector2(this.x / k, this.y / k);
+  }
+
   multiplyScalar(k: number): Vector2 {
     return new Vector2(this.x * k, this.y * k);
   }
@@ -37,8 +41,10 @@ export function interpolateLinearly(
 }
 
 export function findLinesIntersection(
-  pointA: Vector2, pointB: Vector2,
-  pointC: Vector2, pointD: Vector2,
+  pointA: Vector2,
+  pointB: Vector2,
+  pointC: Vector2,
+  pointD: Vector2,
   infiniteLines: boolean = false
 ) {
   // https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line
