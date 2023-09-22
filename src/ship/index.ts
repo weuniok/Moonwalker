@@ -7,8 +7,6 @@ import { createExhaust } from "./exhaust";
 import { createFlightPathPrediction } from "./flightPathPrediction";
 import { createTrail } from "./trail";
 
-const DEBUG = false;
-
 const meterConversion = 1 / 500_000;
 const gravity = 9.81 * meterConversion;
 // const gravity = 0;
@@ -36,7 +34,6 @@ export function createShip(keyboard: KeyboardControls) {
   let thrust = 0;
 
   const rotationThrust: number = 90 * 0.5 * meterConversion;
-  const safeVelocity: number = 0.001; // safe velocity for no kaboom on collision
 
   let rotationAngle = 0; // angle measured clockwise from upwards direction in degrees;
   let rotationAcceleration = 0;
@@ -68,6 +65,19 @@ export function createShip(keyboard: KeyboardControls) {
       `translate(${position.x}, ${position.y}) rotate(${rotationAngle})`
     );
 
+    const debugVertices = document.getElementById(
+      "debugVertices"
+    )! as any as SVGGElement;
+    if (import.meta.env.DEV) {
+      const vertices = getVertices();
+      for (const [index, verticeCircle] of Array.from(
+        debugVertices.querySelectorAll("circle")
+      ).entries()) {
+        verticeCircle.setAttribute("cx", vertices[index].x.toString());
+        verticeCircle.setAttribute("cy", vertices[index].y.toString());
+      }
+    }
+
     const state = readState();
 
     exhaust.update(state);
@@ -76,8 +86,10 @@ export function createShip(keyboard: KeyboardControls) {
   }
 
   function getVertices() {
-    return shipShape.map((vertex) => (vertex.add(position)))
-  };
+    return shipShape.map((vertex) =>
+      vertex.rotateByAngle(rotationAngle).add(position)
+    );
+  }
 
   return {
     readState,
@@ -97,6 +109,16 @@ export function createShip(keyboard: KeyboardControls) {
             />
             ${exhaust.render()}
           </g>
+          
+         { ${
+           import.meta.env.DEV &&
+           `<g id="debugVertices">
+            ${this.getVertices().map((vertex) => {
+              return `<circle cx="${vertex.x}" cy="${vertex.y}" r="3" fill-opacity=0  stroke="var(--slate-300)"/>`;
+            })}
+          </g>`
+         }}
+
         </g>
       `;
     },
@@ -111,9 +133,9 @@ export function createShip(keyboard: KeyboardControls) {
       if (rotationAngle > 180) rotationAngle = rotationAngle - 360;
 
       if (keyboard.isPressed("ArrowRight"))
-        rotationAcceleration = rotationThrust;
-      else if (keyboard.isPressed("ArrowLeft"))
-        rotationAcceleration = -rotationThrust;
+        rotationAcceleration += rotationThrust;
+      if (keyboard.isPressed("ArrowLeft"))
+        rotationAcceleration += -rotationThrust;
 
       if (keyboard.isPressed("ArrowUp")) {
         // makes thrust increase when button is held longer
@@ -175,7 +197,7 @@ function clampToWorldBounds(position: Vector2, velocity: Vector2): void {
 }
 
 function renderDebugRect() {
-  if (DEBUG) {
+  if (import.meta.env.DEV) {
     return `
       <rect
         width="${shipWidth}"

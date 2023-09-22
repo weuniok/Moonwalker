@@ -24,6 +24,18 @@ export class Vector2 {
   sqrMagnitude() {
     return this.x * this.x + this.y * this.y;
   }
+
+  rotateByAngle(angle: number) {
+    const horizontal = Math.sin((angle * Math.PI) / 180);
+    const vertical = Math.cos((angle * Math.PI) / 180);
+
+    return new Vector2(
+      this.x * Math.cos((angle * Math.PI) / 180) -
+        this.y * Math.sin((angle * Math.PI) / 180),
+      this.x * Math.sin((angle * Math.PI) / 180) +
+        this.y * Math.cos((angle * Math.PI) / 180)
+    );
+  }
 }
 
 export function clamp(min: number, value: number, max: number) {
